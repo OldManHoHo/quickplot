@@ -211,9 +211,9 @@ class menu_plot(QtGui.QWidget):
             
     def on_column_change(self):
         plot_num = self.plot_data_list.currentIndex()
-        current_file = self.file_list.currentText()
-        col_x = self.column_list_x.currentText()
-        col_y = self.column_list_y.currentText()
+        current_file = str(self.file_list.currentText())
+        col_x = str(self.column_list_x.currentText())
+        col_y = str(self.column_list_y.currentText())
         self.top_plot.plots[plot_num].set_data(global_frames[current_file][col_x], global_frames[current_file][col_y])
         self.top_plot.paths[plot_num] = self.top_plot.create_path_from_plot_data(self.top_plot.plots[plot_num])
         self.top_plot.refresh_plot = 1
@@ -308,20 +308,32 @@ class view_plot(QtGui.QGraphicsView):
                 print fname
                 #try:
                 
+                max_col_count = 0
+                row_col = 0
                 for i in range(0,5):
                         if fname.endswith(".csv"):
                             try:
                                 frm = pd.read_csv(fname,skiprows=i,low_memory=False)
+                                if len(list(frm.columns.values)) > 2*last_col_count:
+                                    row_col = i
+                                last_col_count = len(list(frm.columns.values))
+                             
                             except:
                                 continue
                             print frm.columns.values
                         elif fname.endswith(".xls") or fname.endswith("xlsx"):
                             frm = pd.read_excel(fname,skiprows=i)
-                        if list(frm.columns.values)[-1].startswith("Unnamed:"):
-                            continue
-                        else:
-                            break
-                            
+                            if len(list(frm.columns.values)) > 2*last_col_count:
+                                row_col = i
+                            last_col_count = len(list(frm.columns.values))
+                        #if list(frm.columns.values)[-1].startswith("Unnamed:"):
+                        #    continue
+                        #else:
+                        #    break
+                if fname.endswith(".csv"):
+                    frm = pd.read_csv(fname,skiprows=row_col,low_memory=False)
+                elif fname.endswith(".xls") or fname.endswith("xlsx"):
+                            frm = pd.read_excel(fname,skiprows=row_col)
                     
                 global_frames[fname] = frm
                 self.files.append(fname)
