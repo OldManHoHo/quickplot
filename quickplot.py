@@ -189,15 +189,14 @@ class menu_plot(QtGui.QWidget):
             self.file_list.setMaximumWidth(max_box_width)
             
             self.column_list_x = QtGui.QComboBox()
-            print list(global_frames[self.file_list.currentText()].columns.values)
-            self.column_list_x.addItems(list(global_frames[self.file_list.currentText()].columns.values))
+            self.column_list_x.addItems(list(global_frames[str(self.file_list.currentText())].columns.values))
             self.grid.addWidget(self.column_list_x,1,3)
             self.column_list_x.setMaximumWidth(max_box_width)
             
             self.column_list_x.currentIndexChanged.connect(self.on_column_change)
             
             self.column_list_y = QtGui.QComboBox()
-            self.column_list_y.addItems(list(global_frames[self.file_list.currentText()].columns.values))
+            self.column_list_y.addItems(list(global_frames[str(self.file_list.currentText())].columns.values))
             self.grid.addWidget(self.column_list_y,1,4)
             self.column_list_y.setMaximumWidth(max_box_width)
             self.set = 1
